@@ -1,17 +1,66 @@
 // All site data. Facts: docs/blueprint-city-of-lougheed-tower-three.md §1. Prices: §7 (see SOURCES.md).
 
-// Floor bands, calibrated in source pixels of assets/05-tower-photo-renx.jpg (800×728, Tower Three
-// is the right-hand slab). The photo crops the top of the tower, so the canvas extends `above` px
-// over the photo and floors past the frame are drawn as an extrapolated outline.
-// rows = centre y of each visible balcony/window row, measured bottom-up on the tower's window
-// column (x≈566); they are floors 3, 4, 5… The glass base (y 493–660) is split into floors 1–2.
+// Tower explorer calibration, in source pixels of assets/07-aerial-day-t3-focus.jpg (1920×1080).
+// Tower Three is the front-centre tower under the "TOWER THREE — MOVE IN TODAY" label, fully in frame.
+// The page shows the `crop` window; the SVG overlay uses the same window as its viewBox, so every
+// number below is an image pixel and the polygons scale with the photo.
+//
+// Each visible plane of the tower (a "facet") lists its slab lines, measured separately at the
+// facet's left and right edge: lines[i] = [y at x[0], y at x[1]] for slab line (from + i).
+// Slab line j is the floor line under floor j+1, so floor n spans line n-1 (bottom) to line n (top).
+//   line 0  = podium parapet / lobby head (bottom of floor 1)
+//   line 1  = podium roof slab (floor 1's top, floor 2's floor)
+//   line 31 = Level 32 Sky Garden terrace slab (parapet foot on the east block)
+//   line 37 = crown top slab (under the roof canopy)
+// West, spine and the east-face lines were read from window-row / slab-shadow profiles sheared
+// along each facet's own slope, then checked by eye at 6-8× zoom. The featureless strips between
+// facets (x 1120.5-1128 and 1137-1148) are spanned straight.
+// Floors above 31 use crownEast (the stepped-back crown block, east edge x≈1200.5) instead of east.
 export const TOWER = {
-  imgW: 800, imgH: 728, cropX: 360, cropW: 440, above: 118,
-  ground: 660, podiumTop: 493, podiumLeft: 395, podiumRight: 785,
-  rows: [481, 456, 431, 406, 382, 359, 337, 314, 293, 272, 252, 233, 214, 195, 177, 160, 143, 127, 111, 95, 80, 65, 51, 37, 24, 10],
-  pitchAbove: 13,
-  // slab edges at the photo's top (y 0) and at the top residential row (y 480), linear between
-  left: [432, 390], right: [690, 752],
+  img: { w: 1920, h: 1080 },
+  crop: { x: 990, y: 360, w: 420, h: 630 },
+  stepBelow: 31,
+  facets: {
+    west: { x: [1081.5, 1120.5], from: 0, lines: [
+      [909.5, 929.2], [899.9, 919.5], [890.4, 909.9], [879.6, 899.1], [869.9, 889.4], [860.5, 880.2],
+      [851.0, 870.9], [841.7, 861.8], [832.6, 852.0], [823.1, 841.9], [813.6, 832.2], [804.4, 823.0],
+      [795.0, 813.2], [785.5, 803.7], [776.0, 794.9], [766.8, 784.7], [757.7, 774.2], [748.2, 764.6],
+      [738.5, 755.0], [729.2, 745.3], [720.5, 736.2], [710.9, 726.1], [700.9, 716.2], [691.6, 706.7],
+      [682.1, 697.1], [672.7, 686.9], [663.1, 676.8], [654.1, 667.2], [644.7, 657.7], [635.1, 648.0],
+      [625.6, 637.5], [615.7, 626.6], [605.7, 616.4], [595.5, 606.3], [585.5, 596.6], [576.1, 586.6],
+      [567.1, 576.1], [556.8, 566.6],
+    ] },
+    spine: { x: [1128, 1137], from: 0, lines: [
+      [930.5, 935.1], [920.8, 925.3], [911.0, 915.6], [901.2, 905.8], [891.6, 896.0], [880.6, 886.2],
+      [870.9, 876.6], [862.5, 866.9], [852.9, 855.9], [843.2, 846.1], [833.6, 837.5], [823.8, 827.8],
+      [813.9, 818.1], [804.2, 808.4], [794.8, 797.4], [785.1, 786.4], [775.1, 776.6], [765.6, 766.8],
+      [755.9, 758.1], [746.2, 749.5], [736.5, 739.8], [726.6, 730.0], [717.0, 718.9], [707.2, 709.0],
+      [697.5, 700.4], [687.9, 690.6], [678.0, 680.8], [668.2, 669.5], [658.6, 661.3], [648.8, 649.9],
+      [638.8, 641.2], [628.9, 630.0], [616.8, 618.5], [604.8, 606.5], [594.9, 596.7], [585.1, 586.9],
+      [575.2, 577.0], [565.9, 567.7],
+    ] },
+    bay: { x: [1148, 1164], from: 0, lines: [
+      [930.5, 938.0], [921.0, 928.5], [913.0, 920.2], [904.8, 910.5], [894.8, 900.5], [884.8, 890.5],
+      [875.0, 880.5], [865.0, 870.8], [855.0, 860.5], [845.0, 850.5], [835.0, 840.8], [825.2, 830.5],
+      [815.2, 820.8], [805.5, 810.8], [795.2, 801.2], [785.5, 791.2], [775.5, 781.2], [765.5, 771.0],
+      [755.8, 761.0], [745.5, 751.0], [735.5, 740.8], [725.8, 730.8], [715.8, 720.5], [705.8, 710.5],
+      [695.8, 700.2], [685.8, 690.2], [675.5, 680.0], [665.8, 670.0], [655.8, 659.8], [645.5, 649.8],
+      [635.8, 639.5], [628.0, 632.7], [618.2, 622.7], [608.4, 612.7], [598.6, 602.9], [588.8, 593.0],
+      [579.0, 583.1], [569.0, 573.1],
+    ] },
+    east: { x: [1166, 1222], from: 0, lines: [
+      [937.0, 901.3], [926.1, 892.1], [916.0, 884.9], [906.8, 875.2], [896.5, 865.8], [886.8, 856.3],
+      [877.2, 847.0], [867.0, 836.8], [857.0, 828.2], [847.0, 819.0], [837.2, 809.9], [827.5, 800.3],
+      [817.5, 790.3], [807.5, 781.1], [797.5, 771.7], [787.5, 762.5], [777.8, 753.0], [768.6, 744.5],
+      [757.8, 733.3], [750.0, 724.2], [739.5, 714.8], [729.8, 705.0], [719.5, 695.9], [709.5, 686.2],
+      [699.8, 677.0], [689.8, 667.5], [680.0, 657.5], [670.2, 648.6], [660.2, 638.3], [650.5, 629.1],
+      [641.3, 619.8], [631.5, 609.5],
+    ] },
+    crownEast: { x: [1166, 1200.5], from: 31, lines: [
+      [631.5, 618.0], [621.0, 607.1], [611.5, 597.6], [600.5, 584.6], [590.0, 575.5], [580.5, 565.7],
+      [571.2, 555.2],
+    ] },
+  },
 };
 
 export const ZONES = [

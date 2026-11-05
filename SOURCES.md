@@ -66,7 +66,7 @@ by rendering; the text of both documents has no plan content.
 | assets/02-kitchen.jpg | Signature SHAPE kitchen (Bosch cooktop) | Official SHAPE site |
 | assets/03-plan-a1.png | Official Plan A1 diagram | Official SHAPE site |
 | assets/04-customer-care.jpg | Customer care | Official SHAPE site |
-| assets/05-tower-photo-renx.jpg | Tower THREE photo, 800×728 | SHAPE courtesy via RENX |
+| assets/05-tower-photo-renx.jpg | Tower THREE photo, 800×728 (kept; no longer the explorer base — see asset 07) | SHAPE courtesy via RENX |
 
 ## Published conflicts (recorded, not resolved)
 
@@ -84,3 +84,6 @@ homes.thecityoflougheed.com (home, /homes, /available-homes, brochure PDF, featu
 article · livabl.com · skyscraperpage.com · presalehomes.ca · presaleproperties.com · vancouvernewcondos.com ·
 mikestewart.ca · MLS® reciprocity mirrors (moreaurealestate.ca, bendovidio.com) · bccondosandhomes.com ·
 nexthome.ca cover story.
+
+- `assets/06-aerial-day-labelled.jpg` — Daytime master-plan aerial RENDERING with baked-in labels ("TOWER THREE — MOVE IN TODAY" leader line lands on Tower Three). Frame extracted at 1920×1080 from SHAPE's official hero video `tcl3-hero-en.mp4` on homes.thecityoflougheed.com, accessed 2026-11-04. (The main cityoflougheed.com domain was unreachable from our network; the same labelled visual is the homes site's hero video.)
+- `assets/07-aerial-day-t3-focus.jpg` — Treated version of asset 06 (owner direction, 2026-11-04): the three neighbouring built towers are desaturated to grey; Tower Three, sky, and greenery stay in full colour. THIS is the Tower Explorer base image; it replaces the RENX photo (asset 05) — Tower Three is fully in frame (all 37 floors), so no extrapolated outline is needed.

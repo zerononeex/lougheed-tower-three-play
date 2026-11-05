@@ -5,38 +5,85 @@ const h = (tag, attrs = {}, html = '') => Object.assign(document.createElement(t
 const FLOORS = 37;
 
 /* ---------- Tower explorer ---------- */
-const bands = $('#bands');
+// One SVG <polygon> per floor, in image-pixel space (viewBox = the crop window), so each quad is the
+// floor's hit area and its highlight and scales exactly with the photo underneath.
+const SVG = 'http://www.w3.org/2000/svg';
+const view = $('#tower-view');
+const svg = $('#tower-svg');
+const chip = $('#floor-chip');
+const anchorChip = $('#anchor-chip');
 const list = $('#floor-list');
-const T = TOWER, canvasH = T.above + T.imgH;
+const T = TOWER, C = T.crop;
 const pct = (v, of) => `${(v / of) * 100}%`;
-Object.assign($('#elev-img').style, { width: pct(T.imgW, T.cropW), left: pct(-T.cropX, T.cropW), top: pct(T.above, canvasH) });
-bands.style.aspectRatio = `${T.cropW} / ${canvasH}`;
+Object.assign($('#elev-img').style, { width: pct(T.img.w, C.w), left: pct(-C.x, C.w), top: pct(-C.y, C.h) });
+view.style.aspectRatio = `${C.w} / ${C.h}`;
+svg.setAttribute('viewBox', `${C.x} ${C.y} ${C.w} ${C.h}`);
 
-// edges[n] = top y of floor n (photo px); edges[0] = ground
-const edges = [T.ground, (T.ground + T.podiumTop) / 2, T.podiumTop];
-T.rows.forEach((y, i) => edges.push(i + 1 < T.rows.length ? (y + T.rows[i + 1]) / 2 : y - (T.rows[i - 1] - y) / 2));
-while (edges.length <= FLOORS) edges.push(edges.at(-1) - T.pitchAbove);
-const lerp = ([a, b], y) => a + ((b - a) * y) / 480;
+// Floor n spans slab line n-1 (bottom) to slab line n (top). Each facet gives every slab line's y at
+// its own left and right edge, so the polygon's edges lie on the measured slab lines at every vertex.
+function lineAt(j, upper) {
+  const f = T.facets, east = upper ? f.crownEast : f.east;
+  return [f.west, f.spine, f.bay, east].flatMap(({ x, from, lines }) => {
+    const [y0, y1] = lines[j - from];
+    return [[x[0], y0], [x[1], y1]];
+  });
+}
+function floorPoints(n) {
+  const upper = n > T.stepBelow;
+  return [...lineAt(n, upper), ...lineAt(n - 1, upper).reverse()];
+}
+const labelOf = n => n <= 2 ? `Podium · Floor ${n}` : n === 32 ? 'Level 32 · Sky Garden' : `Floor ${n}`;
+// chip sits just right of the floor's east edge, at the quad's mid-height
+function placeChip(el, n) {
+  const p = floorPoints(n), i = p.length / 2 - 1, r = (p[i][1] + p[i + 1][1]) / 2;
+  Object.assign(el.style, { left: pct(p[i][0] + 6 - C.x, C.w), top: pct(r - C.y, C.h) });
+}
 
 for (let n = 1; n <= FLOORS; n++) {
-  const podium = n <= 2, top = edges[n], bottom = edges[n - 1];
-  const left = podium ? T.podiumLeft : lerp(T.left, bottom), right = podium ? T.podiumRight : lerp(T.right, bottom);
-  const b = h('button', { type: 'button', className: 'band' + (podium ? ' podium' : '') + (top < 0 ? ' ghost' : '') + (n === 32 ? ' anchor' : ''), ariaLabel: `Floor ${n}` });
-  b.dataset.n = n;
-  b.dataset.label = podium ? `Podium · Floor ${n}` : n === 32 ? 'Level 32 · Sky Garden' : `Floor ${n}`;
-  Object.assign(b.style, {
-    top: pct(top + T.above, canvasH), height: pct(bottom - top, canvasH),
-    left: pct(left - T.cropX, T.cropW), width: pct(right - left, T.cropW),
-  });
-  bands.append(b);
+  const q = document.createElementNS(SVG, 'polygon');
+  q.setAttribute('points', floorPoints(n).map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(' '));
+  q.setAttribute('class', 'floor-quad');
+  q.setAttribute('role', 'button');
+  q.setAttribute('tabindex', '0');
+  q.setAttribute('aria-label', n === 32 ? 'Floor 32, Sky Garden' : `Floor ${n}`);
+  q.dataset.n = n;
+  svg.append(q);
   list.prepend(h('li', {}, `<button type="button" data-n="${n}"${n === 32 ? ' class="anchor" title="Sky Garden"' : ''}>${n}</button>`));
 }
+placeChip(anchorChip, 32);
+
+let hover = 0;
+function showChip() {
+  const n = hover || floor;
+  chip.hidden = !n;
+  anchorChip.hidden = n === 32;
+  if (!n) return;
+  chip.textContent = labelOf(n);
+  placeChip(chip, n);
+}
+const quadOf = e => e.target.closest?.('.floor-quad');
+svg.addEventListener('pointerover', e => { const q = quadOf(e); if (q && !drag) { hover = +q.dataset.n; showChip(); } });
+svg.addEventListener('pointerout', e => { if (!e.relatedTarget?.closest?.('.floor-quad')) { hover = 0; showChip(); } });
+svg.addEventListener('focusin', e => { const q = quadOf(e); if (q) { hover = +q.dataset.n; showChip(); } });
+svg.addEventListener('focusout', () => { hover = 0; showChip(); });
+svg.addEventListener('keydown', e => {
+  const q = quadOf(e);
+  if (!q) return;
+  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectFloor(+q.dataset.n); }
+  if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+    e.preventDefault();
+    selectFloor((floor || +q.dataset.n) + (e.key === 'ArrowUp' ? 1 : -1));
+    svg.querySelector(`[data-n="${floor}"]`).focus();
+  }
+});
 
 let floor = 0;
 function selectFloor(n) {
   floor = Math.min(FLOORS, Math.max(1, n));
   document.querySelectorAll('[data-n]').forEach(el => el.classList.toggle('sel', +el.dataset.n === floor));
   $('#floor-num').value = floor;
+  showChip();
+  placeThumb();
   const zones = ZONES.filter(z => floor >= z.from && floor <= z.to);
   const fams = FAMILIES.filter(f => f.plan && !!f.ph === zones.some(z => z.penthouse));
   $('#floor-panel').innerHTML = `<h2>${floor === 32 ? 'Level 32 — Sky Garden' : `Floor ${floor}`}</h2>` + zones.map(z => `
@@ -48,11 +95,68 @@ function selectFloor(n) {
     <p class="muted small">The developer does not publish which plans sit on which floor.</p>
     <div class="plan-btns">${fams.map(f => `<button type="button" class="btn" data-plan="${f.plan}">${f.name} · 3D</button>`).join('')}</div>` : '');
 }
-const pick = e => e.target.dataset.n && selectFloor(+e.target.dataset.n);
-bands.addEventListener('click', pick);
+const pick = e => e.target.dataset?.n && selectFloor(+e.target.dataset.n);
 list.addEventListener('click', pick);
 $('#floor-down').onclick = () => selectFloor(floor ? floor - 1 : 1);
 $('#floor-up').onclick = () => selectFloor(floor + 1);
+
+/* ---------- Scrub: drag / wheel on the tower moves the selected floor ---------- */
+// The rail spans floor 37 (top) to floor 1 (bottom) at the floors' own heights on the image.
+const rail = $('.scrub-rail'), thumb = $('#scrub-thumb');
+const midY = n => { const p = floorPoints(n); return p.reduce((s, [, y]) => s + y, 0) / p.length; };
+const railTop = midY(FLOORS), railBot = midY(1);
+Object.assign(rail.style, { top: pct(railTop - C.y, C.h), height: pct(railBot - railTop, C.h) });
+function placeThumb() {
+  thumb.hidden = !floor;
+  if (floor) thumb.style.top = pct(midY(floor) - railTop, railBot - railTop);
+}
+placeThumb();
+
+// one floor per ~60% of a floor's on-screen height, never less than 10px
+const PITCH = (railBot - railTop) / (FLOORS - 1);
+const stepPx = () => Math.max(10, 0.6 * PITCH * view.getBoundingClientRect().height / C.h);
+let drag = null;
+view.addEventListener('pointerdown', e => {
+  if (e.pointerType === 'mouse' && e.button !== 0) return;
+  const q = quadOf(e);
+  drag = { id: e.pointerId, y0: e.clientY, x0: e.clientX, from: floor, tapped: q ? +q.dataset.n : 0, wasSel: floor, moved: false };
+});
+view.addEventListener('pointermove', e => {
+  if (!drag || e.pointerId !== drag.id) return;
+  const dy = e.clientY - drag.y0;
+  if (!drag.moved) {
+    if (Math.abs(dy) < 6) return;
+    drag.moved = true; hover = 0;
+    view.setPointerCapture(e.pointerId);
+    view.classList.add('scrubbing');
+    if (!drag.from) drag.from = drag.tapped || Math.round(FLOORS / 2);
+  }
+  const n = Math.min(FLOORS, Math.max(1, drag.from - Math.round(dy / stepPx())));
+  if (n !== floor) selectFloor(n);
+});
+function endDrag(e) {
+  if (!drag || e.pointerId !== drag.id) return;
+  const d = drag; drag = null;
+  view.classList.remove('scrubbing');
+  if (d.moved || e.type === 'pointercancel' || !d.tapped) return;
+  // a tap: select the floor, or, on the already-selected floor, bring its details into view
+  if (d.tapped === d.wasSel) $('#floor-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  else selectFloor(d.tapped);
+}
+view.addEventListener('pointerup', endDrag);
+view.addEventListener('pointercancel', endDrag);
+
+// wheel scrubs too, but only swallows the event when it actually changes the floor
+let wheelAcc = 0;
+view.addEventListener('wheel', e => {
+  const dy = e.deltaMode === 1 ? e.deltaY * 16 : e.deltaMode === 2 ? e.deltaY * 400 : e.deltaY;
+  const dir = dy < 0 ? 1 : -1;  // wheel up = up the tower
+  const next = floor ? floor + dir : dir > 0 ? 1 : 0;
+  if (!next || next < 1 || next > FLOORS) { wheelAcc = 0; return; }  // at the ends, let the page scroll
+  e.preventDefault();
+  wheelAcc += Math.abs(dy);
+  if (wheelAcc >= 40 || Math.abs(dy) >= 40) { wheelAcc = 0; selectFloor(next); }
+}, { passive: false });
 
 /* ---------- Available homes + plans ---------- */
 $('#home-cards').innerHTML = HOMES.map(m => `

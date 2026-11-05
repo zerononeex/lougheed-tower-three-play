@@ -37,12 +37,15 @@
     <ol id="floor-list" class="floor-list" aria-label="All floors"></ol>
   </div>
 
-  <figure class="elevation" aria-label="Tower Three photo with selectable floors">
-    <div id="bands" class="bands">
-      <img src="assets/05-tower-photo-renx.jpg" alt="Tower Three, completed, seen from street level" id="elev-img">
-      <span class="above-frame">Floors 29–37 rise above the photo</span>
+  <figure class="elevation" aria-label="Tower Three rendering with selectable floors">
+    <div id="tower-view" class="tower-view">
+      <img src="assets/07-aerial-day-t3-focus.jpg" alt="Daytime aerial rendering of The City of Lougheed with Tower Three in colour under the label Tower Three, Move in today; neighbouring towers greyed" id="elev-img">
+      <svg id="tower-svg" class="tower-svg" xmlns="http://www.w3.org/2000/svg" aria-label="Floors of Tower Three"></svg>
+      <span id="anchor-chip" class="floor-chip anchor">Level 32 · Sky Garden</span>
+      <span id="floor-chip" class="floor-chip" hidden></span>
+      <div class="scrub-rail" aria-hidden="true"><span class="scrub-thumb" id="scrub-thumb"></span></div>
     </div>
-    <figcaption>Hover or tap a floor. Bands are read from the photo's balcony rows; zone floor ranges are approximate. Photo: SHAPE, via RENX.</figcaption>
+    <figcaption>Tap a floor, or drag up and down on the tower to move through the floors; tap the selected floor again to jump to its details. Floors are traced on the building's slab lines; zone floor ranges are approximate. Image: official rendering via SHAPE's City of Lougheed site; neighbouring towers greyed to focus Tower Three.</figcaption>
   </figure>
 
   <aside id="floor-panel" class="floor-panel" aria-live="polite">
