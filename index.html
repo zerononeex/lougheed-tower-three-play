@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tower Three — The City of Lougheed (concept prototype)</title>
+<meta name="description" content="Unofficial concept prototype: explore Tower Three floor by floor, plans in 3D, published available homes, amenities and sourced pricing.">
+<link rel="stylesheet" href="styles.css">
+<script type="importmap">
+{ "imports": {
+  "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+} }
+</script>
+<script type="module" src="app.js"></script>
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="#tower">TOWER <b>THREE</b></a>
+  <nav>
+    <a href="#tower">Tower</a><a href="#available">Available homes</a><a href="#plans">Plans</a><a href="#pricing">Pricing</a><a href="#homes">Inside</a><a href="#amenities">Amenities</a><a href="#masterplan">Master plan</a><a href="#register">Book a tour</a>
+  </nav>
+</header>
+
+<main>
+<section id="tower" class="explorer">
+  <div class="intro">
+    <p class="eyebrow">The City of Lougheed · Neighbourhood One, Burnaby</p>
+    <h1>Tower Three</h1>
+    <p class="lede">262 move-in-ready homes. Completed July 2023. Three SkyTrain lines at your door. Pick a floor to see what lives there.</p>
+    <p class="hero-ctas"><a class="btn" href="#available">See available homes</a> <a class="btn ghost" href="#register">Book a tour</a></p>
+    <div class="stepper" aria-label="Floor stepper">
+      <button type="button" id="floor-down" aria-label="Floor down">−</button>
+      <output id="floor-num" aria-live="polite">–</output>
+      <button type="button" id="floor-up" aria-label="Floor up">+</button>
+    </div>
+    <ol id="floor-list" class="floor-list" aria-label="All floors"></ol>
+  </div>
+
+  <figure class="elevation" aria-label="Tower Three photo with selectable floors">
+    <div id="bands" class="bands">
+      <img src="assets/05-tower-photo-renx.jpg" alt="Tower Three, completed, seen from street level" id="elev-img">
+      <span class="above-frame">Floors 29–37 rise above the photo</span>
+    </div>
+    <figcaption>Hover or tap a floor. Bands are read from the photo's balcony rows; zone floor ranges are approximate. Photo: SHAPE, via RENX.</figcaption>
+  </figure>
+
+  <aside id="floor-panel" class="floor-panel" aria-live="polite">
+    <p class="muted">Select a floor on the tower, with the − / + stepper, or from the floor list.</p>
+  </aside>
+</section>
+
+<section class="stats">
+  <ul>
+    <li><b>37</b> storeys</li>
+    <li><b>262</b> homes</li>
+    <li><b>July 2023</b> Completed — move-in ready</li>
+    <li><b>22,000+ SF</b> amenity centre</li>
+  </ul>
+</section>
+
+<section id="available" class="block">
+  <h2>Available homes</h2>
+  <p class="muted"><b>Published examples — verify current availability with the sales team.</b> These are dated snapshots from public listings; the developer's own Available Homes page is the live list.</p>
+  <div id="home-cards" class="cards"></div>
+  <p class="footnote">Prices from published third-party databases and MLS® listings — see <a href="#sources">Sources</a>. Subject to change without notice. This is not an offering for sale; verify current pricing and availability with the developer's authorized sales representatives.</p>
+</section>
+
+<section id="plans" class="block">
+  <h2>Plans</h2>
+  <p class="muted">Plan A1's diagram is published by the developer, so its 3D model is traced from it. Other plan diagrams are not yet sourced.</p>
+  <div id="plan-cards" class="cards"></div>
+</section>
+
+<section id="pricing" class="block">
+  <h2>Pricing</h2>
+  <p class="muted">Developer homes, from published third-party databases. Each figure is a dated snapshot — <a href="#sources">where these numbers come from</a>.</p>
+  <div class="cards">
+    <div class="card"><h3>From $555,900</h3><small>presaleproperties.com, updated Nov 2026</small></div>
+    <div class="card"><h3>From $650,000</h3><small>presalehomes.ca, as of Oct 2026</small></div>
+    <div class="card"><h3>1 Bed from $611,000 · 2 Bed from $767,000</h3><small>vancouvernewcondos.com, page updated Oct 29, 2026</small></div>
+    <div class="card"><h3>Range $600,000–$1,000,000</h3><small>Livabl, page crawled ~Jul 2026</small></div>
+    <div class="card"><h3>5% total deposit</h3><small>At contract signing · presaleproperties.com, Nov 2026</small></div>
+  </div>
+  <p class="context">Resale context — resale listings in the tower are a separate market, not developer pricing: resale, 8 active listings, average asking $804,988 (bccondosandhomes.com, updated ~Oct–Nov 2026).</p>
+  <p class="footnote">Prices from published third-party databases and MLS® listings — see <a href="#sources">Sources</a>. Subject to change without notice. This is not an offering for sale; verify current pricing and availability with the developer's authorized sales representatives.</p>
+</section>
+
+<section id="homes" class="block">
+  <h2>Inside the homes</h2>
+  <div class="split two">
+    <img src="assets/02-kitchen.jpg" alt="Bosch gas cooktop on a white quartz countertop" loading="lazy">
+    <div>
+      <h3>Kitchens</h3>
+      <ul class="features">
+        <li>Bosch appliance package — convection wall oven, gas cooktop</li><li>Full-height Italian cabinetry</li><li>Caesarstone quartz countertops</li>
+      </ul>
+      <h3>Bathrooms</h3>
+      <ul class="features">
+        <li>Kohler soaker tub</li><li>Floating vanity</li><li>Large-format porcelain tile</li>
+      </ul>
+      <h3>Throughout</h3>
+      <ul class="features">
+        <li>Over-height ceilings up to 8'6"</li><li>Side-by-side washer/dryer laundry room</li><li>Roller shades</li><li>Bedroom wall sconces</li>
+        <li>USB / 4-plug outlets</li><li>TV-mount backing</li><li>Air conditioning in all homes</li><li>2-5-10 warranty</li>
+      </ul>
+      <p class="muted">Three colour schemes (First Neighbourhood).</p>
+    </div>
+  </div>
+</section>
+
+<section id="amenities" class="block">
+  <h2>Amenities</h2>
+  <h3>In Tower Three</h3>
+  <ul class="features">
+    <li>Double-height Lobby Lounge with fireplace</li><li>Level 32 Sky Garden / Sky Lounge</li><li>Outdoor dining terrace with BBQ + harvest tables</li>
+    <li>24/7 concierge</li><li>Parcel lockers</li><li>EV parking options</li><li>Pet wash + dog run</li><li>Bike maintenance</li><li>Car wash station</li>
+    <li>6 fully furnished bookable guest suites</li>
+  </ul>
+  <h3>Neighbourhood One amenity centre</h3>
+  <p class="muted">A shared, separate 3-storey amenity building — 22,000+ SF per the developer's brochure.</p>
+  <div class="cards">
+    <div class="card"><h3>Lower level</h3><p>Entertainment/dining lounges with chef kitchens, multimedia lounge, games lounges, table tennis, billiards/foosball, study pods, children's play + craft rooms, music rooms.</p></div>
+    <div class="card"><h3>Podium level</h3><p>6,000 SF fitness centre, yoga/Pilates studio, stretching zones.</p></div>
+    <div class="card"><h3>Rooftop</h3><p>Community gardens, outdoor lounge/dining, open-air yoga.</p></div>
+  </div>
+</section>
+
+<section id="masterplan" class="block masterplan">
+  <h2>The only master plan in Metro Vancouver with 3 SkyTrain lines on site</h2>
+  <p class="lines"><span>Expo</span><span>Millennium</span><span>Evergreen</span> at Lougheed Town Centre Station</p>
+  <ul class="facts">
+    <li><b>37</b> acres</li><li><b>20+</b> towers at build-out</li><li><b>$7B</b> investment</li>
+    <li><b>1.3M SF</b> shopping, dining &amp; culture</li><li><b>PriceSmart Foods</b> downstairs</li>
+  </ul>
+</section>
+
+<section class="care">
+  <img src="assets/04-customer-care.jpg" alt="SHAPE customer care team member with a homeowner orientation package" loading="lazy">
+  <div>
+    <h2>Homeowner Care</h2>
+    <p>2-5-10 warranty · SHAPE Customer Care Team</p>
+  </div>
+</section>
+
+<section id="sources" class="block">
+  <h2>Sources</h2>
+  <p class="muted">Pricing source reference table, accessed 2026-11-03. Full URLs in SOURCES.md.</p>
+  <h3>Starting price snapshots</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Figure</th><th>Source</th><th>Date on source</th></tr></thead>
+    <tbody>
+      <tr><td>From $555,900</td><td>presaleproperties.com (Best Presale Condos in Burnaby ranking)</td><td>Updated November 2026</td></tr>
+      <tr><td>From $650,000</td><td>presalehomes.ca</td><td>"As of October 2026"; page updated Oct 24, 2026</td></tr>
+      <tr><td>Range $600,000–$1,000,000</td><td>livabl.com</td><td>Page crawled ~Jul 2026</td></tr>
+      <tr><td>1 Bed from $611,000 (~$1,136/SF); 2 Bed from $767,000 (~$983/SF)</td><td>vancouvernewcondos.com</td><td>"As of late 2025" snapshot on page updated Oct 29, 2026</td></tr>
+    </tbody>
+  </table></div>
+  <h3>Specific homes — published examples</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Home</th><th>Details</th><th>Price</th><th>Source</th><th>Date</th></tr></thead>
+    <tbody>
+      <tr><td>#1204</td><td>2 Bed / 2 Bath (feature home)</td><td>$773,000 ($818/SF)</td><td>vancouvernewcondos.com (updated Oct 29, 2026)</td><td>Oct 2026</td></tr>
+      <tr><td>#2506</td><td>2 Bed + Den / 2 Bath, 891 SF int. + 311 SF ext.</td><td>$829,000</td><td>vancouvernewcondos.com</td><td>Oct 2026</td></tr>
+      <tr><td>#2004</td><td>2 Bed / 2 Bath, 945 SF int. + 237 SF ext., parking</td><td>Not published</td><td>vancouvernewcondos.com / mikestewart.ca</td><td>Oct 2026</td></tr>
+      <tr><td>#3105</td><td>2 Bed, 780 SF, MLS® R3178789, listed by Shape Marketing</td><td>$721,000</td><td>MLS® reciprocity via moreaurealestate.ca</td><td>Data updated Nov 2, 2026</td></tr>
+      <tr><td>PH3</td><td>Penthouse 3: 3 Bed + Den, 1,561 SF + 583 SF outdoor, MLS® R3165094, listed by Shape Marketing</td><td>Not published</td><td>MLS® reciprocity via moreaurealestate.ca / bendovidio.com</td><td>Data updated Nov 4, 2026</td></tr>
+    </tbody>
+  </table></div>
+  <h3>Market context (resale — not developer pricing)</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Figure</th><th>Source</th><th>Date</th></tr></thead>
+    <tbody>
+      <tr><td>Resale: 8 active listings, average asking $804,988</td><td>bccondosandhomes.com building page</td><td>Updated ~Oct–Nov 2026</td></tr>
+      <tr><td>Resale, past year: 8 sold, average $705,125, ~33 days on market</td><td>bccondosandhomes.com</td><td>Accessed Nov 2026</td></tr>
+    </tbody>
+  </table></div>
+  <h3>Deposits</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Item</th><th>Figure</th><th>Source</th><th>Date</th></tr></thead>
+    <tbody><tr><td>Deposit structure</td><td>5% total, at contract signing</td><td>presaleproperties.com</td><td>Nov 2026</td></tr></tbody>
+  </table></div>
+  <h3>Plans &amp; published conflicts</h3>
+  <ul class="notes">
+    <li>Plan A1 3D model: traced from the developer's published Plan A1 diagram (assets/03-plan-a1.png, homes.thecityoflougheed.com).</li>
+    <li>Penthouse 3 3D model: representative, built from MLS® R3165094's published figures; no PH3 diagram is published.</li>
+    <li>The official Tower Three brochure and Features PDF contain no floor-plan diagrams.</li>
+    <li>Amenity centre size: 22,000+ SF (developer brochure) vs 20,000+ SF (Features PDF) vs 18,000 SF (mikestewart.ca). The brochure governs on this page.</li>
+    <li>Guest suites: 6 (developer brochure) vs 2 (one presale database). The brochure governs on this page.</li>
+    <li>Total homes: 262 (consensus, matching SHAPE's 262-home release). A higher total-unit figure on one database is treated as an error.</li>
+    <li>Completion: July 2023. A later completion date on one database is wrong and discarded.</li>
+  </ul>
+  <p class="footnote">Prices from published third-party databases and MLS® listings — see Sources. Subject to change without notice. This is not an offering for sale; verify current pricing and availability with the developer's authorized sales representatives.</p>
+</section>
+
+<section id="register" class="block">
+  <h2>Book a tour</h2>
+  <div class="split two">
+    <form id="register-form" class="form">
+      <p class="demo-note">Demo form — it submits nowhere and stores nothing.</p>
+      <label>Name<input name="name" autocomplete="name" required></label>
+      <label>Email<input name="email" type="email" autocomplete="email" required></label>
+      <label>Phone<input name="phone" type="tel" autocomplete="tel"></label>
+      <label>Postal code<input name="postal" autocomplete="postal-code"></label>
+      <fieldset><legend>Are you a realtor?</legend>
+        <label class="inline"><input type="radio" name="realtor" value="yes"> Yes</label><label class="inline"><input type="radio" name="realtor" value="no" checked> No</label></fieldset>
+      <button class="btn" type="submit">Register (demo)</button>
+      <p id="register-msg" class="muted" aria-live="polite"></p>
+    </form>
+    <div>
+      <h3>Sales office — in Tower Three</h3>
+      <p>3888 Evergreen Place, Burnaby<br>Open daily 12–6pm, except Fridays</p>
+      <p>T <a href="tel:6043287128">604-328-7128</a><br>E <a href="mailto:info@thecityoflougheed.com">info@thecityoflougheed.com</a></p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <p>Unofficial concept prototype built from publicly available information. Not affiliated with SHAPE Properties. This is not an offering for sale. Renderings are the developer's published marketing images, used for reference.</p>
+</footer>
+
+<dialog id="viewer" class="viewer" aria-labelledby="viewer-title">
+  <div class="viewer-head">
+    <div>
+      <h2 id="viewer-title"></h2>
+      <p id="viewer-specs" class="muted"></p>
+      <p id="viewer-label" class="label"></p>
+    </div>
+    <div class="viewer-tools">
+      <button type="button" id="v-top">Top-down</button>
+      <button type="button" id="v-xray" aria-pressed="false">X-ray</button>
+      <button type="button" id="v-close" aria-label="Close 3D viewer">✕</button>
+    </div>
+  </div>
+  <div id="viewer-canvas" class="viewer-canvas"></div>
+  <p id="room-info" class="room-info" aria-live="polite"></p>
+</dialog>
+
+<dialog id="lightbox" class="lightbox">
+  <img id="lb-img" alt="">
+  <p><b id="lb-title"></b> <span id="lb-note" class="muted"></span></p>
+  <button type="button" id="lb-close" aria-label="Close image">✕</button>
+</dialog>
+</body>
+</html>
