@@ -78,12 +78,14 @@ svg.addEventListener('keydown', e => {
 });
 
 let floor = 0;
+let tower3d = null, loading3d = null; // the 3D view, created on first switch
 function selectFloor(n) {
   floor = Math.min(FLOORS, Math.max(1, n));
   document.querySelectorAll('[data-n]').forEach(el => el.classList.toggle('sel', +el.dataset.n === floor));
   $('#floor-num').value = floor;
   showChip();
   placeThumb();
+  tower3d?.setFloor(floor);
   const zones = ZONES.filter(z => floor >= z.from && floor <= z.to);
   const fams = FAMILIES.filter(f => f.plan && !!f.ph === zones.some(z => z.penthouse));
   $('#floor-panel').innerHTML = `<h2>${floor === 32 ? 'Level 32 — Sky Garden' : `Floor ${floor}`}</h2>` + zones.map(z => `
@@ -139,9 +141,12 @@ function endDrag(e) {
   const d = drag; drag = null;
   view.classList.remove('scrubbing');
   if (d.moved || e.type === 'pointercancel' || !d.tapped) return;
-  // a tap: select the floor, or, on the already-selected floor, bring its details into view
-  if (d.tapped === d.wasSel) $('#floor-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  else selectFloor(d.tapped);
+  tapFloor(d.tapped, d.wasSel);
+}
+// a tap (photo or 3D): select the floor, or, on the already-selected floor, bring its details into view
+function tapFloor(n, wasSel = floor) {
+  if (n === wasSel) $('#floor-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  else selectFloor(n);
 }
 view.addEventListener('pointerup', endDrag);
 view.addEventListener('pointercancel', endDrag);
@@ -157,6 +162,35 @@ view.addEventListener('wheel', e => {
   wheelAcc += Math.abs(dy);
   if (wheelAcc >= 40 || Math.abs(dy) >= 40) { wheelAcc = 0; selectFloor(next); }
 }, { passive: false });
+
+/* ---------- Explorer views: Photo | 3D Model. Both views share `floor` and the side panel. ---------- */
+const wrap3d = $('#tower3d');
+async function setView(v) {
+  const is3d = v === '3d';
+  $('#view-toggle').querySelectorAll('[data-view]').forEach(b => b.setAttribute('aria-pressed', b.dataset.view === v));
+  view.hidden = is3d;
+  wrap3d.hidden = !is3d;
+  $('#cap-photo').hidden = is3d;
+  $('#cap-3d').hidden = !is3d;
+  if (!is3d) { tower3d?.stop(); return; }
+  try {
+    loading3d ??= import('./tower3d.js').then(m => m.createTower3D(wrap3d, {
+      T: TOWER, label: labelOf, onPick: n => tapFloor(n),
+      amenityLabel: 'Amenity centre — 3 levels', skyLabel: 'Level 32 — Sky Garden',
+      onAmenity: () => $('#amenities').scrollIntoView({ behavior: 'smooth', block: 'start' }),
+    }));
+    tower3d = await loading3d;
+  } catch (err) {
+    loading3d = null;
+    $('#t3d-status').textContent = 'The 3D model could not load Three.js from unpkg.com — check your connection.';
+    console.warn(err);
+    return;
+  }
+  $('#t3d-status').hidden = true;
+  tower3d.setFloor(floor);
+  if (!wrap3d.hidden) tower3d.start(); // still on 3D after loading
+}
+$('#view-toggle').addEventListener('click', e => e.target.dataset.view && setView(e.target.dataset.view));
 
 /* ---------- Available homes + plans ---------- */
 $('#home-cards').innerHTML = HOMES.map(m => `

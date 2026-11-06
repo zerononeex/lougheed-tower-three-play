@@ -87,3 +87,7 @@ nexthome.ca cover story.
 
 - `assets/06-aerial-day-labelled.jpg` — Daytime master-plan aerial RENDERING with baked-in labels ("TOWER THREE — MOVE IN TODAY" leader line lands on Tower Three). Frame extracted at 1920×1080 from SHAPE's official hero video `tcl3-hero-en.mp4` on homes.thecityoflougheed.com, accessed 2026-11-04. (The main cityoflougheed.com domain was unreachable from our network; the same labelled visual is the homes site's hero video.)
 - `assets/07-aerial-day-t3-focus.jpg` — Treated version of asset 06 (owner direction, 2026-11-04): the three neighbouring built towers are desaturated to grey; Tower Three, sky, and greenery stay in full colour. THIS is the Tower Explorer base image; it replaces the RENX photo (asset 05) — Tower Three is fully in frame (all 37 floors), so no extrapolated outline is needed.
+
+## 3D massing model (explorer second view)
+
+`tower3d.js` is a stylized massing model generated from the facet calibration of asset 07 (`TOWER` in data.js). The rendering is a reference for proportions, colours and mood only; no photo is used as a texture. Assumptions not taken from a source: 2.9 m typical floor-to-floor (sets the scale), podium extent beyond the tower, crown cap size, and the positions of the grey neighbouring masses (abstract, not models of real buildings). Amenity interiors are not modelled; no amenity-centre plan is published.

@@ -37,7 +37,10 @@
     <ol id="floor-list" class="floor-list" aria-label="All floors"></ol>
   </div>
 
-  <figure class="elevation" aria-label="Tower Three rendering with selectable floors">
+  <figure class="elevation" aria-label="Tower Three explorer">
+    <div class="view-toggle" id="view-toggle" role="group" aria-label="Explorer view">
+      <button type="button" data-view="photo" aria-pressed="true">Photo</button><button type="button" data-view="3d" aria-pressed="false">3D Model</button>
+    </div>
     <div id="tower-view" class="tower-view">
       <img src="assets/07-aerial-day-t3-focus.jpg" alt="Daytime aerial rendering of The City of Lougheed with Tower Three in colour under the label Tower Three, Move in today; neighbouring towers greyed" id="elev-img">
       <svg id="tower-svg" class="tower-svg" xmlns="http://www.w3.org/2000/svg" aria-label="Floors of Tower Three"></svg>
@@ -45,7 +48,12 @@
       <span id="floor-chip" class="floor-chip" hidden></span>
       <div class="scrub-rail" aria-hidden="true"><span class="scrub-thumb" id="scrub-thumb"></span></div>
     </div>
-    <figcaption>Tap a floor, or drag up and down on the tower to move through the floors; tap the selected floor again to jump to its details. Floors are traced on the building's slab lines; zone floor ranges are approximate. Image: official rendering via SHAPE's City of Lougheed site; neighbouring towers greyed to focus Tower Three.</figcaption>
+    <div id="tower3d" class="tower3d" role="group" aria-label="Stylized 3D massing model of Tower Three with selectable floors" hidden>
+      <p id="t3d-status" class="t3d-status">Loading 3D model…</p>
+    </div>
+    <figcaption><span id="cap-photo">Tap a floor, or drag up and down on the tower to move through the floors; tap the selected floor again to jump to its details. Floors are traced on the building's slab lines; zone floor ranges are approximate. Image: official rendering via SHAPE's City of Lougheed site; neighbouring towers greyed to focus Tower Three.</span>
+      <span id="cap-3d" hidden>Drag to orbit · pinch or scroll to zoom · two fingers or right-drag to pan · tap a floor.<br>
+      Stylized 3D massing model generated from the developer's published renderings — for illustration only, not architectural drawings.</span></figcaption>
   </figure>
 
   <aside id="floor-panel" class="floor-panel" aria-live="polite">
