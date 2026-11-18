@@ -1,3 +1,16 @@
-# lougheed-tower-three-play
+# Lougheed Tower Three — interactive sales site
 
-The public site was taken offline on 2026-11-18 (revert this commit to restore it).
+Unofficial concept prototype for Tower THREE at The City of Lougheed: floor explorer over SHAPE's official
+labelled aerial rendering, a 3D dollhouse of Plan A1 (traced from the developer's published diagram) and a representative
+Penthouse 3, published available-home examples, sourced pricing, amenities and master plan.
+
+Static site — no build step. Serve the repo root (`python3 -m http.server`) or use GitHub Pages.
+Three.js 0.160.0 loads from unpkg for the 3D viewer only.
+
+- Spec: `docs/blueprint-city-of-lougheed-tower-three.md`
+- Sources and conflicts: `SOURCES.md`
+- Tower explorer calibration (slab lines, slopes, silhouette edges, in asset 07 pixels): `TOWER` in data.js.
+- Explorer 3D Model view: `tower3d.js` builds a stylized massing model procedurally from `TOWER` (no photo textures).
+  `towerPlan()` documents how the floor plates come from the facet calibration. Verification: `docs/verification/3d/`.
+- Add a plan: one object in `PLANS` (data.js). Add a room image: drop `assets/rooms/<planId>-<roomId>.jpg`
+  and list its filename in `ROOM_DROPINS`.
